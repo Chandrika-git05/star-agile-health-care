@@ -44,6 +44,8 @@ pipeline {
           sh '''
         export AWS_ACCESS_KEY_ID=$awsaccess
         export AWS_SECRET_ACCESS_KEY=$awsaccesskey
+        echo "AWS credentials exported"
+      '''
          }
       }
     }
