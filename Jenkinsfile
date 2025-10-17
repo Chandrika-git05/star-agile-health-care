@@ -41,6 +41,9 @@ pipeline {
     stage('AWS-Login') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'awslogin', passwordVariable: 'awsaccesskey', usernameVariable: 'awsaccess')]) {
+          sh '''
+        export AWS_ACCESS_KEY_ID=$awsaccess
+        export AWS_SECRET_ACCESS_KEY=$awsaccesskey
          }
       }
     }
