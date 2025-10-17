@@ -55,11 +55,27 @@ pipeline {
         }
       }
     }
+stage('deploy kubernetesserver'){
+    steps {
+        sh 'sudo chmod 600 ./kubernetes/chandrikakey.pem'
+        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey.pem deployment.yml ubuntu@172.31.20.141:/home/ubuntu/'
+        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey.pem service.yml ubuntu@172.31.20.141:/home/ubuntu/'
+
+        script {
+            try {
+                sh 'ssh -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey.pem ubuntu@172.31.20.141 kubectl apply -f .'
+            } catch(error) {
+                sh 'ssh -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey.pem ubuntu@172.31.20.141 kubectl apply -f .'
+            }
+        }
+    }
+}
+
     /*
     stage('Deploy to minikube') {
       steps {
-        sh 'sudo chmod 600 ./terraform_files/sir.pem'
-        sh 'sudo scp -o StrictHostKeyChecking=no -i ./terraform_files/sir.pem ./terraform_files'
+        sh 'sudo chmod 600 ./kubernetes/chandrikakey.pem'
+        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey.pem ./kubernetes'
       }
     }
     */
