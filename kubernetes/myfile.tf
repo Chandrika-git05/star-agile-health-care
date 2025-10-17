@@ -42,7 +42,8 @@ resource "aws_instance" "kubernetes-server" {
       type        = "ssh"
       host        = self.public_ip
       user        = "ubuntu"
-      private_key = file("./chandrikakey.pem")   # Path to your private key file
+      private_key = file("${path.module}/chandrikakey")
+   # Path to your private key file
     }
   }
 }
