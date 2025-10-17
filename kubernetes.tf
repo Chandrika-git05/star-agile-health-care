@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_instance" "kubernetes-server" {
   ami           = ""                # Replace with valid AMI ID (e.g., Ubuntu)
   instance_type = "t3.medium"
-  vpc_security_group_ids = [""]     # Replace with valid security group ID(s)
+  vpc_security_group_ids = ["sg-03096b78ac0135593"]     # Replace with valid security group ID(s)
   key_name      = "chandrikakey"
 
   root_block_device {
