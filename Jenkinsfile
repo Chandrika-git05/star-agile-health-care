@@ -8,7 +8,7 @@ pipeline {
     stage('Git Checkout') {
       steps {
         echo 'This stage is to clone the repo from github'
-        git branch: 'master', url: 'https://github.com/rohinicbabu/star-agile-health-care.git'
+        git branch: 'master', url: 'https://github.com/Chandrika-git05/star-agile-health-care.git'
                         }
             }
     stage('Create Package') {
@@ -17,35 +17,30 @@ pipeline {
         sh 'mvn package'
                           }
             }
-    stage('Generate Test Report') {
-      steps {
-        echo 'This stage generate Test report using TestNG'
-        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Healthcare/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                          }
-            }
+    
      stage('Create Docker Image') {
       steps {
         echo 'This stage will Create a Docker image'
-        sh 'docker build -t cbabu85/healthcare:1.0 .'
+        sh 'docker build -t chandrika5592/healthcaremedicure:1.0 .'
                           }
             }
      stage('Login to Dockerhub') {
       steps {
         echo 'This stage will loginto Dockerhub' 
-        withCredentials([usernamePassword(credentialsId: 'dockerloginnew', passwordVariable: 'dockerpass', usernameVariable: 'dockeruser')]) {
-        sh 'docker login -u ${dockeruser} -p ${dockerpass}'
+       withCredentials([usernamePassword(credentialsId: 'dockercreds', passwordVariable: 'dockerpwd', usernameVariable: 'dockerlogin')]) {
+       sh 'docker login -u ${dockerlogin} -p ${dockerpwd}'
             }
          }
      }
     stage('Docker Push-Image') {
       steps {
         echo 'This stage will push my new image to the dockerhub'
-        sh 'docker push cbabu85/healthcare:1.0'
+        sh 'docker push chandrika5592/healthcaremedicure:1.0'
             }
       }
     stage('AWS-Login') {
       steps {
-        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'Awsaccess', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+        withCredentials([usernamePassword(credentialsId: 'awslogin', passwordVariable: 'awsaccesskey', usernameVariable: 'awsaccess')]) {
          }
       }
     }
@@ -61,7 +56,7 @@ pipeline {
         }
       }
     }
-    stage('Terraform destroy & apply for test workspace') {
+   /* stage('Terraform destroy & apply for test workspace') {
       steps {
         sh 'terraform apply -auto-approve'
       }
@@ -111,7 +106,7 @@ pipeline {
         sh 'kubectl apply -f app-deploy.yml'
         sh 'kubectl get svc'
       }
-    }
+    }*/
   }
 }
  
