@@ -58,8 +58,8 @@ pipeline {
 stage('deploy kubernetesserver'){
     steps {
         sh 'sudo chmod 600 ./kubernetes/chandrikakey'
-        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey deployment.yml ubuntu@172.31.20.141:/home/ubuntu/'
-        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey service.yml ubuntu@172.31.20.141:/home/ubuntu/'
+        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey ./kubernetes/deployment.yml ubuntu@172.31.20.141:/home/ubuntu/'
+        sh 'sudo scp -o StrictHostKeyChecking=no -i ./kubernetes/chandrikakey ./kubernetes/service.yml ubuntu@172.31.20.141:/home/ubuntu/'
 
         script {
             try {
