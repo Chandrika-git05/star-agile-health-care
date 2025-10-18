@@ -80,8 +80,9 @@ pipeline {
                                 chmod +x minikube-linux-amd64
                                 sudo mv minikube-linux-amd64 /usr/local/bin/minikube
                             fi
+
                             if ! command -v kubectl &> /dev/null; then
-                                curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+                                curl -LO https://storage.googleapis.com/kubernetes-release/release/\$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
                                 chmod +x kubectl
                                 sudo mv kubectl /usr/local/bin/kubectl
                             fi
@@ -103,11 +104,11 @@ pipeline {
 
                             # Wait for EXTERNAL-IP
                             EXTERNAL_IP=""
-                            while [ -z \${EXTERNAL_IP} ]; do
+                            while [ -z \$EXTERNAL_IP ]; do
                                 EXTERNAL_IP=\$(kubectl get svc medicure-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
                                 sleep 5
                             done
-                            echo "🎯 Service is accessible at: http://\${EXTERNAL_IP}:8085"
+                            echo "🎯 Service is accessible at: http://\$EXTERNAL_IP:8085"
                         '
                     """
                 }
