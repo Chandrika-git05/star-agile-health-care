@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: medicure-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: medicure
   ports:
     - protocol: TCP
-      port: 8085          # Service port
-      targetPort: http-web-app  # Matches container port name
+      port: 8085
+      targetPort: http-web-app
