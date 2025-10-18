@@ -5,8 +5,8 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: front-end
+    app: medicure
   ports:
-  - protocol: TCP
-    port: 8085
-    targetPort: http-web-app-01
+    - protocol: TCP
+      port: 8085          # Service port
+      targetPort: http-web-app  # Matches container port name
