@@ -73,26 +73,8 @@ pipeline {
                     def host = "ubuntu@172.31.20.141"
 
                     sh """
-                        ssh -o StrictHostKeyChecking=no -i ${key} ${host} bash -c '
-                            # Install Minikube and kubectl if missing
-                            if ! command -v minikube &> /dev/null; then
-                                wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-                                chmod +x minikube-linux-amd64
-                                sudo mv minikube-linux-amd64 /usr/local/bin/minikube
-                            fi
-
-                            if ! command -v kubectl &> /dev/null; then
-                                curl -LO https://storage.googleapis.com/kubernetes-release/release/\$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-                                chmod +x kubectl
-                                sudo mv kubectl /usr/local/bin/kubectl
-                            fi
-
-                            # Start Minikube if not running
-                            if ! minikube status &> /dev/null; then
-                                sudo minikube start --driver=none
-                            fi
-
-                            # Delete old deployment and service to avoid immutable field issues
+                        ssh -o StrictHostKeyChecking=no -i ${key} ${host} <<'EOF'
+                            # Delete old deployment and service (ignore errors)
                             kubectl delete deployment medicure-deployment || true
                             kubectl delete svc medicure-service || true
 
@@ -103,14 +85,15 @@ pipeline {
                             # Start Minikube tunnel in background
                             nohup sudo minikube tunnel > /tmp/minikube-tunnel.log 2>&1 &
 
-                            # Wait for EXTERNAL-IP
+                            # Wait for EXTERNAL-IP of LoadBalancer
                             EXTERNAL_IP=""
                             while [ -z \$EXTERNAL_IP ]; do
                                 EXTERNAL_IP=\$(kubectl get svc medicure-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
                                 sleep 5
                             done
+
                             echo "🎯 Service is accessible at: http://\$EXTERNAL_IP:8085"
-                        '
+EOF
                     """
                 }
             }
