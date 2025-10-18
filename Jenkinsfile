@@ -74,18 +74,18 @@ pipeline {
 
                     sh """
                         ssh -o StrictHostKeyChecking=no -i ${key} ${host} <<'EOF'
-                            # Delete old deployment and service (ignore errors)
+                            # Delete old deployment and service to avoid immutable field issues
                             kubectl delete deployment medicure-deployment || true
                             kubectl delete svc medicure-service || true
 
-                            # Apply deployment and service YAMLs
+                            # Apply new deployment and service
                             kubectl apply -f ${remote}/deployment.yml
                             kubectl apply -f ${remote}/service.yml
 
-                            # Start Minikube tunnel in background
-                            nohup sudo minikube tunnel > /tmp/minikube-tunnel.log 2>&1 &
+                            # Start Minikube tunnel in background with sudo
+                            nohup sudo minikube tunnel --cleanup > /tmp/minikube-tunnel.log 2>&1 &
 
-                            # Wait for EXTERNAL-IP of LoadBalancer
+                            # Wait for EXTERNAL-IP to be assigned
                             EXTERNAL_IP=""
                             while [ -z \$EXTERNAL_IP ]; do
                                 EXTERNAL_IP=\$(kubectl get svc medicure-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
