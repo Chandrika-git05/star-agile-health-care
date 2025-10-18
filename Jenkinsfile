@@ -92,10 +92,11 @@ pipeline {
                                 sudo minikube start --driver=none
                             fi
 
-                            # Delete old service if exists
+                            # Delete old deployment and service to avoid immutable field issues
+                            kubectl delete deployment medicure-deployment || true
                             kubectl delete svc medicure-service || true
 
-                            # Apply deployment and LoadBalancer service
+                            # Apply deployment and service YAMLs
                             kubectl apply -f ${remote}/deployment.yml
                             kubectl apply -f ${remote}/service.yml
 
